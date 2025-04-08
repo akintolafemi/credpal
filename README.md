@@ -50,6 +50,12 @@ To set up the project, follow these steps:
 
 ## Running the Project
 
+To run the project install npm modules:
+
+```bash
+npm install
+```
+
 To run the project in development mode, execute the following command:
 
 ```bash
