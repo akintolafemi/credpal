@@ -81,14 +81,16 @@ export class WalletsService {
       walletnumber: walletNumber,
     });
 
-    const fundWallet: FundWalletType = {
-      subWalletId: subWallet.id,
-      fromWalletNumber: req.subwallet,
-      amount: req.initialbalance,
-      transactionType: TransactionType.fund,
-    };
+    if (req.subwallet) {
+      const fundWallet: FundWalletType = {
+        subWalletId: subWallet.id,
+        fromWalletNumber: req.subwallet,
+        amount: req.initialbalance,
+        transactionType: TransactionType.fund,
+      };
 
-    await this.walletQueue.add(WalletActionTypes.FUND_WALLET, fundWallet);
+      await this.walletQueue.add(WalletActionTypes.FUND_WALLET, fundWallet);
+    }
 
     return ResponseManager.standardResponse({
       //send out response if everything works well

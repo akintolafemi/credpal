@@ -10,7 +10,7 @@ import {
   ApiCreatedResponse,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { CreateUserDto, VerifyOTPDto } from '@dtos/auth.dto';
+import { CreateUserDto, EmailDto, VerifyOTPDto } from '@dtos/auth.dto';
 import MainGuard from 'src/guards/main.guards';
 
 @ApiBearerAuth()
@@ -54,5 +54,16 @@ export class AuthController {
   @Post(`/verify`)
   public verifyOTP(@Body() req: VerifyOTPDto) {
     return this.service.verifyOTP(req);
+  }
+
+  @ApiOkResponse({
+    description: 'Success',
+  })
+  @ApiNotFoundResponse({
+    description: 'email not found',
+  })
+  @Post(`/request/otp`)
+  public requestOTP(@Body() req: EmailDto) {
+    return this.service.requestOTP(req);
   }
 }

@@ -10,7 +10,7 @@ import {
   SendAccountVerificationData,
 } from 'src/types/events.types';
 import { Repository } from 'typeorm';
-import { sendEmailNotification } from '@utils/notification.utils';
+import { sendEmailNotification } from '@utils/email.utils';
 import { AuditLogs } from '@entities/audit.entity';
 import { Wallets } from '@entities/wallet.entity';
 import { Users } from '@entities/user.entity';
@@ -91,6 +91,7 @@ export class EventsService {
           {
             userid: user.id,
             walletnumber: subWalletAccountNumber,
+            balance: '50000.00', // fund wallet with initial deposit of 50,000NGN
           },
         ],
       });
