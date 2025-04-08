@@ -1,4 +1,4 @@
-import { CreateUserDto, VerifyOTPDto } from '@dtos/auth.dto';
+import { CreateUserDto, EmailDto, VerifyOTPDto } from '@dtos/auth.dto';
 import { VerificationCodes } from '@entities/code.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Users } from '@entities/user.entity';
@@ -163,7 +163,36 @@ export class AuthService {
 
     return ResponseManager.standardResponse({
       //send out response if everything works well
-      message: `Code verification successful successful!`,
+      message: `Code verification successful!`,
+      code: HttpStatus.OK,
+      status: StatusText.OK,
+    });
+  }
+
+  async requestOTP(req: EmailDto): Promise<standardResponse> {
+    const userExist = await this.usersRepository.findOne({
+      where: {
+        email: req.email,
+      },
+    });
+    if (!userExist)
+      throw new HttpException(
+        {
+          message: 'User not found',
+          code: HttpStatus.NOT_FOUND,
+          status: StatusText.NOT_FOUND,
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    const verifyReq: SendAccountVerificationData = {
+      email: req.email,
+    };
+
+    this.eventEmitter.emit(EventType.SEND_OTP, verifyReq);
+
+    return ResponseManager.standardResponse({
+      //send out response if everything works well
+      message: `OTP request successful!`,
       code: HttpStatus.OK,
       status: StatusText.OK,
     });

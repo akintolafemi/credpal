@@ -37,7 +37,12 @@ To set up the project, follow these steps:
     - Add the API key to your `.env` file.
 
 5.  **Documentation:**
+
     - Api documentation is available at [http://localhost:${PORT}/documentation] when project is started
+
+6.  **Token:**
+    - A default token is required to access all endpoints in the /auth route
+    - For other routes, the session token generated at login is required to access every other endpoints
 
 ## Running the Project
 
@@ -46,4 +51,5 @@ To run the project in development mode, execute the following command:
 ```bash
 npm run start:dev
 ```
+
 # credpal

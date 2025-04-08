@@ -13,8 +13,8 @@ export class CronjobsService {
     private codesRepository: Repository<VerificationCodes>,
   ) {}
 
-  //DELETE OTPS AFTER 5 MINUTES
-  @Cron(CronExpression.EVERY_MINUTE)
+  //DELETE OTPS AFTER 10 MINUTES
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async DeleteOTP() {
     try {
       const fiveMinsAgo = moment().utc(true).subtract(5, 'minutes').toDate();
