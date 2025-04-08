@@ -41,8 +41,12 @@ To set up the project, follow these steps:
     - Api documentation is available at [http://localhost:${PORT}/documentation] when project is started
 
 6.  **Token:**
+
     - A default token is required to access all endpoints in the /auth route
     - For other routes, the session token generated at login is required to access every other endpoints
+
+7.  **JWT**
+    - Create a certs folder in the root directory and generate private and public pem files under the names jwt.private.pem and jwt.public.pem.
 
 ## Running the Project
 
@@ -53,3 +57,8 @@ npm run start:dev
 ```
 
 # credpal
+
+## Assumptions
+
+1. **First Wallet Balance (NGN wallet)**
+   -There is an assumption that when a user is signing up, the user adds their debit card and a sum of 50,000.00NGN is debited and credited to the first generated NGN wallet
