@@ -144,7 +144,7 @@ export class WalletsService {
       subWalletId: to.id,
       fromWalletNumber: fromWallet.walletnumber,
       amount: Number(req.amount),
-      transactionType: TransactionType.conversion,
+      transactionType: TransactionType.trade,
     };
 
     await this.walletQueue.add(WalletActionTypes.FUND_WALLET, fundWallet);

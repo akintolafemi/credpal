@@ -53,3 +53,8 @@ npm run start:dev
 ```
 
 # credpal
+
+## Assumptions
+
+1. **First Wallet Balance (NGN wallet)**
+   -There is an assumption that when a user is signing up, the user adds their debit card and a sum of 50,000.00NGN is debited and credited to the first generated NGN wallet
