@@ -28,6 +28,7 @@ import { RatesService } from './rates.service';
 
 @Injectable()
 export class WalletsService {
+  //inject dependecies
   constructor(
     private ratesService: RatesService,
     //inject current request
@@ -41,13 +42,18 @@ export class WalletsService {
     @InjectQueue(BullMQQueueType.WALLET) private walletQueue: Queue,
   ) {}
 
+  //create a new wallet
   async generateNewWallet(req: GenerateWalletDto): Promise<standardResponse> {
+    //find the main wallet for the user
+    //this is the wallet that will hold aggregate of all the currencies
+    //this is generated when user is verified
     const wallet = await this.walletRepository.findOne({
       where: {
         userid: this.request.user.id,
         deleted: false,
       },
     });
+    //throw error if no wallet
     if (!wallet)
       throw new HttpException(
         {
@@ -58,6 +64,9 @@ export class WalletsService {
         HttpStatus.NOT_FOUND,
       );
 
+    //check if user currently does not have a wallet of the same currency
+    //if user has a wallet of the same currency, throw error
+    //if user does not have a wallet of the same currency, create a new wallet
     const currencyWallet = await this.subWalletRepository.findOneBy({
       currency: req.currency,
       userid: this.request.user.id,
@@ -73,6 +82,8 @@ export class WalletsService {
         HttpStatus.CONFLICT,
       );
 
+    //generate a new wallet number
+    //this is a unique number that will identify the wallet
     const walletNumber = generateWalletNumber();
     const subWallet = await this.subWalletRepository.save({
       currency: req.currency,
@@ -81,6 +92,7 @@ export class WalletsService {
       walletnumber: walletNumber,
     });
 
+    //if there's subwallet in the request, fund the wallet
     if (req.subwallet) {
       const fundWallet: FundWalletType = {
         subWalletId: subWallet.id,
@@ -89,7 +101,12 @@ export class WalletsService {
         transactionType: TransactionType.fund,
       };
 
-      await this.walletQueue.add(WalletActionTypes.FUND_WALLET, fundWallet);
+      //create a job to fund the wallet
+      //this will be processed in the background
+      await this.walletQueue.add(WalletActionTypes.FUND_WALLET, fundWallet, {
+        jobId: `debit:${req.subwallet}`,
+        removeOnComplete: true,
+      });
     }
 
     return ResponseManager.standardResponse({
@@ -111,12 +128,15 @@ export class WalletsService {
     });
   }
 
+  //trade currencies
   async trade(req: ConvertCurrenciesDto) {
+    //find wallet of the currency to trade from
     const fromWallet = await this.subWalletRepository.findOneBy({
       currency: req.from,
       deleted: false,
       userid: this.request.user.id,
     });
+    //throw error if not found
     if (!fromWallet)
       throw new HttpException(
         {
@@ -126,6 +146,8 @@ export class WalletsService {
         },
         HttpStatus.NOT_FOUND,
       );
+    //find wallet of the currency to trade to
+    //throw error if not found
     const to = await this.subWalletRepository.findOneBy({
       currency: req.to,
       deleted: false,
@@ -147,7 +169,12 @@ export class WalletsService {
       transactionType: TransactionType.trade,
     };
 
-    await this.walletQueue.add(WalletActionTypes.FUND_WALLET, fundWallet);
+    //create a job to fund the wallet
+    //this will be processed in the background
+    await this.walletQueue.add(WalletActionTypes.FUND_WALLET, fundWallet, {
+      jobId: `debit:${fromWallet.walletnumber}`,
+      removeOnComplete: true,
+    });
 
     return ResponseManager.standardResponse({
       //send out response if everything works well
@@ -221,7 +248,10 @@ export class WalletsService {
       transactionType: TransactionType.fund,
     };
 
-    await this.walletQueue.add(WalletActionTypes.FUND_WALLET, fundWallet);
+    await this.walletQueue.add(WalletActionTypes.FUND_WALLET, fundWallet, {
+      jobId: `debit:${fromWallet.walletnumber}`,
+      removeOnComplete: true,
+    });
 
     return ResponseManager.standardResponse({
       //send out response if everything works well

@@ -32,6 +32,7 @@ export class EventsService {
     private userRepository: Repository<Users>,
   ) {}
 
+  //audit log event listener
   @OnEvent(EventType.AUDIT_LOG)
   async audiLog(data: AuditLogs) {
     try {
@@ -74,16 +75,22 @@ export class EventsService {
     }
   }
 
+  //account verified event listener
   @OnEvent(EventType.ACCOUNT_VERIFIED)
   async accountVerified(email: string) {
     try {
+      //find the user by email
+      //throw error if not found
       const user = await this.userRepository.findOneBy({
         email,
         deleted: false,
       });
       if (!user) return;
+      //generate main wallet for user
       const walletNumber = generateWalletNumber();
+      //generate NGN sub wallet for user
       const subWalletAccountNumber = generateWalletNumber();
+      //save both in a single operation
       await this.walletRepository.save({
         walletnumber: walletNumber,
         userid: user.id,

@@ -20,6 +20,7 @@ import { AuditLogs } from '@entities/audit.entity';
 
 @Injectable()
 export class AuthService {
+  //inject dependencies
   constructor(
     private readonly jwtService: JwtService,
     //inject current request
@@ -32,7 +33,10 @@ export class AuthService {
     private eventEmitter: EventEmitter2,
   ) {}
 
+  //login user
   async loginUser(req: CreateUserDto): Promise<standardResponse> {
+    //find user
+    //throw error if not found
     const user = await this.usersRepository.findOne({
       where: {
         email: req.email,
@@ -62,6 +66,8 @@ export class AuthService {
       );
     }
 
+    //create audit log
+    //this will be used to track user activity
     const log: Partial<AuditLogs> = {
       userid: user.id,
       action: 'Authentication',
@@ -76,7 +82,10 @@ export class AuthService {
       email: user.email,
       id: user.id,
     };
+    //generate JWT token for user
     const token = this.jwtService.sign(payload, {});
+    //generate refresh token
+    //this will be used to refresh the access token
     const refreshtoken = this.jwtService.sign(payload, {
       expiresIn: '70m',
     });
@@ -94,7 +103,10 @@ export class AuthService {
     });
   }
 
+  //create new user
   async registerUser(req: CreateUserDto): Promise<standardResponse> {
+    //find user
+    //throw error is exist
     const userExist = await this.usersRepository.findOne({
       where: {
         email: req.email,
@@ -112,6 +124,7 @@ export class AuthService {
 
     const password = await bcrypt.hash(req.password, BCRYPT_HASH_ROUNDS); //hash the password
 
+    //save the user to database
     await this.usersRepository.save({
       email: req.email,
       password,
@@ -121,6 +134,8 @@ export class AuthService {
       email: req.email,
     };
 
+    //emit event to send verification code
+    //this will be used to send verification code to user
     this.eventEmitter.emit(EventType.SEND_OTP, verifyReq);
 
     return ResponseManager.standardResponse({
@@ -131,7 +146,10 @@ export class AuthService {
     });
   }
 
+  //verify OTP
   async verifyOTP(req: VerifyOTPDto): Promise<standardResponse> {
+    //find code if exit
+    //throw error if not found
     const codeExist = await this.codesRepository.findOneBy({
       email: req.email,
       code: req.code,
@@ -146,10 +164,12 @@ export class AuthService {
         HttpStatus.NOT_FOUND,
       );
 
+    //delete the code
     await this.codesRepository.delete({
       id: codeExist.id,
     });
 
+    //update user and set verified to true
     await this.usersRepository.update(
       {
         email: req.email,
@@ -159,6 +179,7 @@ export class AuthService {
       },
     );
 
+    //emit event to notify user of successful verification
     this.eventEmitter.emit(EventType.ACCOUNT_VERIFIED, req.email);
 
     return ResponseManager.standardResponse({
@@ -169,6 +190,7 @@ export class AuthService {
     });
   }
 
+  //request new OTP
   async requestOTP(req: EmailDto): Promise<standardResponse> {
     const userExist = await this.usersRepository.findOne({
       where: {

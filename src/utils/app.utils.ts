@@ -9,6 +9,7 @@ import { StatusText } from 'src/types/response.manager.utils';
 export const AppOptions: NestApplicationOptions = {
   rawBody: true,
   cors: {
+    //set allowed method types
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
   },
 };

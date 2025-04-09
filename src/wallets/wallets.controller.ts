@@ -28,6 +28,7 @@ import {
 @UseGuards(RolesGuard)
 @Controller('wallets')
 export class WalletsController {
+  //inject walletservice
   constructor(private readonly service: WalletsService) {}
 
   @ApiOkResponse({

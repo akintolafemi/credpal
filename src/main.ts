@@ -7,11 +7,16 @@ import helmet from 'helmet';
 import { AppOptions, ValidationPipesOptions } from './utils/app.utils';
 
 async function bootstrap() {
+  //create a new Nest application
+  //use express as the underlying platform
+  //use the AppModule as the main module
+  //use the AppOptions for the application
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
     AppOptions,
   );
 
+  //add helmet for security
   app.use(helmet());
 
   app.setGlobalPrefix('/api/v1'); //add versioning prefix to all API endpoints

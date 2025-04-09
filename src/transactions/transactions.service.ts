@@ -16,6 +16,7 @@ export class TransactionsService {
     private transactionRepository: Repository<Transactions>,
   ) {}
 
+  //fetch user transactions
   async fetchTransactions(walletnumber?: string) {
     const transactions = await this.transactionRepository.find({
       where: [
