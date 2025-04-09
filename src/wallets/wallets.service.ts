@@ -120,7 +120,7 @@ export class WalletsService {
     if (!fromWallet)
       throw new HttpException(
         {
-          message: 'Wallet to credit not found',
+          message: 'Wallet to trade from not found',
           status: StatusText.NOT_FOUND,
           code: HttpStatus.NOT_FOUND,
         },
@@ -134,7 +134,7 @@ export class WalletsService {
     if (!to)
       throw new HttpException(
         {
-          message: 'Wallet to debit not found',
+          message: 'Wallet to trade with not found',
           status: StatusText.NOT_FOUND,
           code: HttpStatus.NOT_FOUND,
         },
@@ -151,7 +151,7 @@ export class WalletsService {
 
     return ResponseManager.standardResponse({
       //send out response if everything works well
-      message: `Conversion in progress`,
+      message: `Trade in progress`,
       code: HttpStatus.OK,
       status: StatusText.OK,
     });
@@ -194,7 +194,7 @@ export class WalletsService {
     if (!fromWallet)
       throw new HttpException(
         {
-          message: 'Wallet to credit not found',
+          message: 'Wallet to debit not found',
           status: StatusText.NOT_FOUND,
           code: HttpStatus.NOT_FOUND,
         },
@@ -208,7 +208,7 @@ export class WalletsService {
     if (!to)
       throw new HttpException(
         {
-          message: 'Wallet to debit not found',
+          message: 'Wallet to credit not found',
           status: StatusText.NOT_FOUND,
           code: HttpStatus.NOT_FOUND,
         },

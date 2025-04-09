@@ -63,6 +63,13 @@ export class Transactions {
   type: TransactionType;
 
   @Column({
+    type: 'varchar',
+    length: 7,
+    default: 'NGN/NGN',
+  })
+  currency: string;
+
+  @Column({
     type: 'decimal',
     precision: 20,
     scale: 4,

@@ -17,9 +17,9 @@ export class CronjobsService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   async DeleteOTP() {
     try {
-      const fiveMinsAgo = moment().utc(true).subtract(5, 'minutes').toDate();
+      const tenMinsAgo = moment().utc(true).subtract(10, 'minutes').toDate();
       await this.codesRepository.delete({
-        createdat: LessThanOrEqual(fiveMinsAgo),
+        createdat: LessThanOrEqual(tenMinsAgo),
       });
     } catch (error) {
       console.log(error);

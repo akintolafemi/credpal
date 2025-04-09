@@ -73,6 +73,8 @@ export class WalletConsumer extends WorkerHost {
             reference: new Date().getTime().toString(),
             type: data.transactionType,
             rate,
+            currency:
+              `${fromWallet.currency}/${toWallet.currency}`.toUpperCase(),
           });
           await manager.save([fromWallet, toWallet, transaction]);
         });

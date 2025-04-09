@@ -68,3 +68,42 @@ npm run start:dev
 
 1. **First Wallet Balance (NGN wallet)**
    -There is an assumption that when a user is signing up, the user adds their debit card and a sum of 50,000.00NGN is debited and credited to the first generated NGN wallet
+
+# 🧭 User Flow
+
+## 📝 Registration
+
+- User registers with **email** and **password**.
+
+## 🔐 OTP Verification
+
+- An OTP (One-Time Password) is sent to the user's email address.
+- User verifies their account using the OTP.
+- If a new OTP is needed, it can be requested via the `/auth/request/otp` endpoint.
+
+## 🔓 Login
+
+- User logs in with **email** and **password**.
+- Upon successful login:
+  - A **token** (valid for 60 minutes) is generated.
+  - A **refresh token** (valid for 70 minutes) is also generated.
+- The **access token** must be used as a bearer token for authentication in all subsequent API requests.
+
+## 💼 Initial Wallet Creation
+
+- Once the account is verified:
+  - An **NGN (Nigerian Naira)** wallet is automatically created for the user.
+  - The wallet is credited with an initial balance of **₦50,000.00**.
+
+## 💱 Additional Wallets
+
+- Users can generate wallets for other **currency types**.
+- Users are restricted to **only one wallet per currency type**.
+
+## 💳 Wallet Operations
+
+- Users can perform the following wallet operations via API:
+  - **Funding**
+  - **Transfers**
+  - **Balance checks**
+- All operations require a **valid bearer token** for authentication.

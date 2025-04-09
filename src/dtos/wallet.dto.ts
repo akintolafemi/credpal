@@ -72,7 +72,8 @@ export class ConvertCurrenciesDto {
   @ApiProperty({
     name: 'amount',
     type: 'number',
-    description: 'Amount in the currency to convert from',
+    description:
+      'Amount in the currency to convert from or in currency to trade',
   })
   @IsDecimal()
   @IsNotEmpty()
@@ -81,7 +82,8 @@ export class ConvertCurrenciesDto {
   @ApiProperty({
     name: 'from',
     type: 'string',
-    description: 'ISO4217 representation of currency you want to convert from.',
+    description:
+      'ISO4217 representation of currency you want to convert/trade from.',
     examples: ['USD', 'NGN', 'GBP'],
   })
   @IsISO4217CurrencyCode()
@@ -91,7 +93,8 @@ export class ConvertCurrenciesDto {
   @ApiProperty({
     name: 'to',
     type: 'string',
-    description: 'ISO4217 representation of currency you want to convert to.',
+    description:
+      'ISO4217 representation of currency you want to convert/trade to.',
     examples: ['USD', 'NGN', 'GBP'],
   })
   @IsISO4217CurrencyCode()
